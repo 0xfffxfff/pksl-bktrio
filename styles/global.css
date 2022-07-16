@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'NeueBit-Bold';
+  src: url('/fonts/ppneuebit-bold-webfont.eot');
+  src: url('/fonts/ppneuebit-bold-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/fonts/ppneuebit-bold-webfont.woff2') format('woff2'),
+       url('/fonts/ppneuebit-bold-webfont.woff') format('woff'),
+       url('/fonts/ppneuebit-bold-webfont.ttf') format('truetype'),
+       url('/fonts/ppneuebit-bold-webfont.svg#pp_neuebitbold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: 'NeueBit';
+  src: url('/fonts/ppneuebit-regular-webfont.eot');
+  src: url('/fonts/ppneuebit-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/fonts/ppneuebit-regular-webfont.woff2') format('woff2'),
+       url('/fonts/ppneuebit-regular-webfont.woff') format('woff'),
+       url('/fonts/ppneuebit-regular-webfont.ttf') format('truetype'),
+       url('/fonts/ppneuebit-regular-webfont.svg#pp_neuebitregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+html {
+  font-size: 18px;
+}
+
+@media screen and (max-width: 700px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: url('/media/bg32.gif');
+  background-size: 100% auto;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: NeueBit-Bold;
+}
+
+select, input {
+  font-family: NeueBit-Bold;
+}
+
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.2rem; }
+a { color: inherit }
+
+img:not(.non-pixelated) {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* .connectButton > div {
+  width: 100%;
+} */
+@media screen and (min-width: 768px) {
+  .connectButton button {
+    font-size: 2vw !important;
+  }
+  .connectButton button {
+    height: auto !important;
+  }
+}
