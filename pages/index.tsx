@@ -12,15 +12,22 @@ const contractConfig = {
 };
 
 const Home: NextPage = () => {
+  const [balanceOf, setBalanceOf] = useState(0);
   const [totalMinted, setTotalMinted] = useState(0);
+  const [maxSupply, setMaxSupply] = useState(4096);
+  const [maxPerAddress, setMaxPerAddress] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
 
-  const { data: mintPriceData } = useContractRead({
-    ...contractConfig,
-    functionName: 'mintPrice',
-    watch: true,
-  });
+  const { data: balanceOfData } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: [address], enabled: isConnected, watch: true });
+  const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'mintPrice', watch: false });
+  const { data: totalSupplyData } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
+  const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
+  const { data: maxPerAddressData } = useContractRead({ ...contractConfig, functionName: 'maxPerAddress', watch: false });
+  useEffect(() => { if (balanceOfData) setBalanceOf(balanceOfData.toNumber()); }, [balanceOfData]);
+  useEffect(() => { if (totalSupplyData) setTotalMinted(totalSupplyData.toNumber()); }, [totalSupplyData]);
+  useEffect(() => { if (maxSupplyData) setMaxSupply(maxSupplyData.toNumber()); }, [maxSupplyData]);
+  useEffect(() => { if (maxPerAddressData) setMaxPerAddress(maxPerAddressData.toNumber()); }, [maxPerAddressData]);
 
   const {
     data: mintData, write: mint, isLoading: isMintLoading, isSuccess: isMintStarted, error: mintError,
@@ -32,23 +39,11 @@ const Home: NextPage = () => {
   });
   const isMinted = txSuccess;
 
-  const { data: totalSupplyData } = useContractRead({
-    ...contractConfig,
-    functionName: 'totalSupply',
-    watch: true,
-  });
-  useEffect(() => {
-    if (totalSupplyData) {
-      setTotalMinted(totalSupplyData.toNumber());
-    }
-  }, [totalSupplyData]);
-
-
   return (
-    <div className="p-5">
+    <div className="p-5 pb-10">
 
       {/* LEFT SIDE */}
-      <div className="flex flex-col sm:flex-row gap-5 lg:gap-10 items-stretch justify-items-stretch">
+      <div className="flex flex-col sm:flex-row gap-10 sm:gap-5 lg:gap-10 items-stretch justify-items-stretch">
         <div className="basis-4/12 flex flex-col gap-10">
 
           <div className="flex gap-5 sm:gap-10 items-start">
@@ -83,6 +78,17 @@ const Home: NextPage = () => {
             <img src="/media/pakki-expand.gif" className="w-5/12" />
             <img src="/media/pakki-expand.gif" className="w-5/12" />
           </div>
+
+          <div className="flex gap-5 lg:gap-10 sm:flex-col lg:flex-row text-2xl sm:text-lg xl:text-2xl 2xl:text-3xl">
+            <ul className="space-y-5 lg:space-y-10 w-1/2">
+              <li><a href="#" className="flex gap-2"><img src="/media/discord.png" alt="" className="h-[1.4em]" /> Discord</a></li>
+              <li><a href="#" className="flex gap-2"><img src="/media/twitter.png" alt="" className="h-[1.4em]" /> Twitter</a></li>
+            </ul>
+            <ul className="space-y-5 lg:space-y-10 w-1/2">
+              <li><a href="#" className="flex gap-2"><img src="/media/opensea.png" alt="" className="h-[1.4em]" /> OpenSea</a></li>
+              <li><a href="#" className="flex gap-2"><img src="/media/looksrare.png" alt="" className="h-[1.4em]" /> LooksRare</a></li>
+            </ul>
+          </div>
         </div>
 
         {/* RIGHT SIDE */}
@@ -105,9 +111,12 @@ const Home: NextPage = () => {
           <img src="/media/border.gif" className="non-pixelated" />
 
           {/* MID ROW */}
-          <div className="flex items-start gap-5 lg:gap-10">
+          <div className="flex flex-col items-start">
             <svg viewBox={"0 0 " + (95 + (totalMinted < 10 ? 0 : (totalMinted < 100 ? 14 : (totalMinted < 1000 ? 28 : 42)))) + " 22"}>
               <text x="0" y="20">{totalMinted === 0 ? '-' : totalMinted} minted</text>
+            </svg>
+            <svg viewBox="0 0 300 22">
+              <text x="0" y="20">{maxSupply} max population</text>
             </svg>
           </div>
           <div>
@@ -126,7 +135,7 @@ const Home: NextPage = () => {
                     onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
                     value={quantity}
                   >
-                    {[...Array(32)].map((e, i) =>
+                    {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
                       <option value={i+1} key={i+1}>{i+1}</option>
                     )}
                   </select>
@@ -149,6 +158,9 @@ const Home: NextPage = () => {
 
               </button>
             </div>
+            <p className="mt-3">
+              {balanceOf > 0 ? ('You already own ' + balanceOf + ' pksl bktrios.') : ''} You can mint up to {maxPerAddress - balanceOf} {balanceOf > 0 ? 'more.' : 'pksl bktrios.'}
+            </p>
 
             {/* <p>
               Price: {quantity} x {mintPriceData ? utils.formatEther(mintPriceData) : '–'} ETH<br />
@@ -160,6 +172,12 @@ const Home: NextPage = () => {
             brutally pixelated, irregularly animated, randomly combined, visually surprising. clean, cute, scary, overwhelming, brimming with life.
           </div>
         </div>
+      </div>
+
+      <div className="text-2xl mt-20 leading-relaxed">
+        art by <a href="https://twitter.com/siggieggertsson" className="underline">Siggi Eggertson</a>,
+        minting page made by ♥ <a href="https://0xfff.love" className="underline">0xfff</a>,
+        contract deployed with <a href="https://indeliblelabs.io/" className="underline">indellible</a>
       </div>
     </div>
   );
