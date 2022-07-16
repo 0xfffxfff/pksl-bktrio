@@ -73,7 +73,7 @@ const Home: NextPage = () => {
             <img src="/media/heads-grid.gif" className="w-[30%]" />
           </div>
 
-          <img src="/media/mrgm1.png" />
+          <div><img src="/media/mrgm1.png" className="w-full" /></div>
 
           <svg viewBox="0 0 195 22">
             <text x="0" y="20">mint now. it&apos;s free.</text>

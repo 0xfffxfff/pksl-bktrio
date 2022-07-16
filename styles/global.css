@@ -8,6 +8,10 @@
   box-sizing: border-box;
 }
 
+* {
+  text-transform: lowercase !important;
+}
+
 @font-face {
   font-family: 'NeueBit-Bold';
   src: url('/fonts/ppneuebit-bold-webfont.eot');
