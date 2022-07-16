@@ -89,7 +89,7 @@ const customTheme: Theme = merge(lightTheme(),
 function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <div className="fixed h-screen w-screen top-0 right-0 bottom-0 left-0 z-0">
+      <div className="fixed top-[-7%] right-[-7%] bottom-[-7%] left-[-7%] z-0">
         <img src="/media/bg32.gif" className="w-full h-full" />
       </div>
       <div className="relative z-1">
