@@ -43,8 +43,7 @@ const Home: NextPage = () => {
   });
   const isMinted = txSuccess;
 
-  async function handleMint(e: MouseEvent | KeyboardEvent | TouchEvent, quantity: number) {
-    e.preventDefault();
+  async function handleMint(quantity: number) {
     try {
       const tx = await mint();
       const desc = `Minting ${quantity} Pksl Bktrios`;
@@ -193,7 +192,7 @@ const Home: NextPage = () => {
               <button
                 className="py-5 px-16 bg-black text-white text-3xl"
                 disabled={isMintLoading/* || isMintStarted*/}
-                onClick={(e) => handleMint(e, quantity)}
+                onClick={(e) => handleMint(quantity)}
               >
                 {isMintLoading && 'Waiting for approval'}
                 {/* {isMintStarted && 'Minting...'} */}
