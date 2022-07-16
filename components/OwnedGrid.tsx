@@ -17,7 +17,7 @@ export default function OwnedGrid({ ...props }) {
           (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string)
         ]
       }).then((data) => {
-        setNfts(data?.ownedNfts)
+        setNfts(data?.ownedNfts.sort((a, b) => (parseInt(b.tokenId,10) - parseInt(a.tokenId,10))))
       });
     } else {
       setNfts([])
