@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 // import Image from 'next/image';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import Mint from '../components/Mint';
-import FitText from '../components/FitText';
-import FluffiFace from  '../components/FluffiFace';
 import { useAccount, useContractRead, useContractWrite, useWaitForTransaction } from 'wagmi';
 import contractInterface from '../contract-abi.json';
 import { utils } from 'ethers';
@@ -79,7 +76,7 @@ const Home: NextPage = () => {
           <img src="/media/mrgm1.png" />
 
           <svg viewBox="0 0 195 22">
-            <text x="0" y="20">mint now. it's free.</text>
+            <text x="0" y="20">mint now. it&apos;s free.</text>
           </svg>
 
           <div className="flex gap-5 lg:gap-10">
@@ -137,7 +134,7 @@ const Home: NextPage = () => {
                     value={quantity}
                   >
                     {[...Array(32)].map((e, i) =>
-                      <option value={i+1}>{i+1}</option>
+                      <option value={i+1} key={i+1}>{i+1}</option>
                     )}
                   </select>
                   <div className="absolute right-4 top-0 bottom-0 w-5 flex items-center pointer-events-none">
