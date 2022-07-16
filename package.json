@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@alch/alchemy-sdk": "^1.0.8",
     "@rainbow-me/rainbowkit": "workspace:*",
     "@types/lodash.merge": "^4.6.7",
     "autoprefixer": "^10.4.7",

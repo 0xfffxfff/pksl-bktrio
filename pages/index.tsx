@@ -8,8 +8,10 @@ import { utils } from 'ethers';
 import { toast, ToastContainer } from 'react-toastify';
 import { useAddRecentTransaction } from '@rainbow-me/rainbowkit'
 import { handleTxError } from '../common/handleTxError';
+import OwnedGrid from '../components/OwnedGrid';
+
 const contractConfig = {
-  addressOrName: '0x4449C90E437d345Db0C2848F0F6D8CfBDe55f547',
+  addressOrName: (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string),
   contractInterface: contractInterface,
 };
 
@@ -26,11 +28,11 @@ const Home: NextPage = () => {
   const { data: balanceOfData } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: [address], enabled: isConnected, watch: true });
   const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'mintPrice', watch: false });
   const { data: totalSupplyData } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
-  const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
+  // const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
   const { data: maxPerAddressData } = useContractRead({ ...contractConfig, functionName: 'maxPerAddress', watch: false });
   useEffect(() => { if (balanceOfData) setBalanceOf(balanceOfData.toNumber()); }, [balanceOfData]);
   useEffect(() => { if (totalSupplyData) setTotalMinted(totalSupplyData.toNumber()); }, [totalSupplyData]);
-  useEffect(() => { if (maxSupplyData) setMaxSupply(maxSupplyData.toNumber()); }, [maxSupplyData]);
+  // useEffect(() => { if (maxSupplyData) setMaxSupply(maxSupplyData.toNumber()); }, [maxSupplyData]);
   useEffect(() => { if (maxPerAddressData) setMaxPerAddress(maxPerAddressData.toNumber()); }, [maxPerAddressData]);
 
   const {
@@ -215,6 +217,13 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+
+      { isConnected ?
+        <div className="mt-10">
+          <h2 className="text-6xl mb-7">you own {balanceOf} pksel bktrios <img src="/media/fluffi-climb-crop.gif" alt="" className="inline-block h-[1em]" /></h2>
+          <OwnedGrid address={address} nonce={balanceOf} />
+        </div>
+      : null }
 
       <div className="text-sm">
         <ToastContainer
