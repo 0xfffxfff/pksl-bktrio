@@ -64,6 +64,7 @@ const customTheme: Theme = merge(darkTheme({
       closeButtonBackground: '#fff',
       connectButtonBackground: '#000',
       connectButtonInnerBackground: '#000',
+      modalBackground: '#000',
 
       profileForeground: '#000',
 
