@@ -32,12 +32,12 @@ const { chains, provider, webSocketProvider } = configureChains(
 );
 
 const { wallets } = getDefaultWallets({
-  appName: 'RainbowKit Mint NFT Demo',
+  appName: 'pksl bktrio',
   chains,
 });
 
-const demoAppInfo = {
-  appName: 'RainbowKit Mint NFT Demo',
+const appInfo = {
+  appName: 'pksl bktrio',
 };
 
 const connectors = connectorsForWallets([
@@ -131,7 +131,7 @@ function App({ Component, pageProps }: AppProps) {
       <div className="relative z-1">
         <WagmiConfig client={wagmiClient}>
           <RainbowKitProvider
-            appInfo={demoAppInfo}
+            appInfo={appInfo}
             chains={chains}
             theme={customTheme}
             showRecentTransactions={true}
