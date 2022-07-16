@@ -93,18 +93,11 @@ const Home: NextPage = () => {
             <img src="/media/pksl.png" className="w-1/2"/>
             <div className="flex flex-col justify-between self-stretch gap-5 lg:gap-10">
               <div className="connectButton grow flex gap-5 lg:gap-10 flex-col items-end nobg-blue-400">
-                {/* <FitText className="w-full h-full">Test</FitText> */}
-                {/* <FitText> */}
                   <ConnectButton accountStatus="address" />
-                {/* </FitText> */}
-                {/* <FitText>mint now. it’s free.</FitText> */}
               </div>
               <div className="flex justify-between items-end gap-5 lg:gap-10">
-                {/* <FitText className="w-full h-full">Test</FitText> */}
-                {/* <FitText> */}
                 <img src="/media/excl.gif" className="w-6/12" />
                 <img src="/media/pkslgrid.png" className="w-5/12" />
-                {/* </FitText> */}
               </div>
             </div>
           </div>
@@ -166,7 +159,6 @@ const Home: NextPage = () => {
           <div className="text-3xl lg:text-5xl" style={{ lineHeight: 1.4 }}>pksl bktrios are a new on-chain strain of the original bktr.io. <br/>
             brutally pixelated, irregularly animated, randomly combined, visually surprising. clean, cute, scary, overwhelming, brimming with life.
           </div>
-          {/* </FitText> */}
         </div>
       </div>
     </div>
