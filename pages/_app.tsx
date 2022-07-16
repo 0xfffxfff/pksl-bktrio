@@ -1,7 +1,8 @@
 import merge from 'lodash.merge';
 
-import '../styles/global.css';
+import 'react-toastify/dist/ReactToastify.css';
 import '@rainbow-me/rainbowkit/styles.css';
+import '../styles/global.css';
 import type { AppProps } from 'next/app';
 import {
   RainbowKitProvider,
@@ -9,7 +10,9 @@ import {
   connectorsForWallets,
   wallet,
   lightTheme,
-  Theme
+  Theme,
+  darkTheme,
+  AvatarComponent
 } from '@rainbow-me/rainbowkit';
 import { chain, createClient, configureChains, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
@@ -52,11 +55,17 @@ const wagmiClient = createClient({
   webSocketProvider,
 });
 
-const customTheme: Theme = merge(lightTheme(),
+const customTheme: Theme = merge(darkTheme({
+    borderRadius: 'none'
+  }),
   {
     colors: {
-      accentColor: '#000',
+      accentColor: '#bbb',
       closeButtonBackground: '#fff',
+      connectButtonBackground: '#000',
+      connectButtonInnerBackground: '#000',
+
+      profileForeground: '#000',
 
       actionButtonSecondaryBackground: '#fff',
 
@@ -77,14 +86,41 @@ const customTheme: Theme = merge(lightTheme(),
     },
     shadows: {
       connectButton: 'none',
-      // dialog: '...',
-      // profileDetailsAction: '...',
-      // selectedOption: '...',
-      // selectedWallet: '...',
-      // walletLogo: '...',
+      dialog: 'none',
+      profileDetailsAction: 'none',
+      selectedOption: 'none',
+      selectedWallet: 'none',
+      walletLogo: 'none',
     },
   }
 )
+
+
+const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
+  return ensImage ? (
+    <img
+      src={ensImage}
+      width={size}
+      height={size}
+      style={{ borderRadius: 999 }}
+    />
+  ) : (
+    <div
+      style={{
+        backgroundColor: '#fff',
+        backgroundImage: 'url("/media/primma-morph.gif")',
+        backgroundSize: '50% auto',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        borderRadius: 999,
+        height: size,
+        width: size,
+      }}
+    >
+      {/* :^) */}
+    </div>
+  );
+};
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -94,7 +130,13 @@ function App({ Component, pageProps }: AppProps) {
       </div>
       <div className="relative z-1">
         <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider appInfo={demoAppInfo} chains={chains} theme={customTheme}>
+          <RainbowKitProvider
+            appInfo={demoAppInfo}
+            chains={chains}
+            theme={customTheme}
+            showRecentTransactions={true}
+            avatar={CustomAvatar}
+          >
             <Component {...pageProps} />
           </RainbowKitProvider>
         </WagmiConfig>

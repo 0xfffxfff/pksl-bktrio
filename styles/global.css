@@ -85,3 +85,42 @@ img:not(.non-pixelated) {
     height: auto !important;
   }
 }
+
+
+:root {
+  --toastify-font-family: 'NeueBit-Bold';
+  --toastify-toast-width: 400px;
+}
+
+@media screen and (min-width: 470px) {
+  :root {
+    --toastify-toast-width: 460px;
+  }
+}
+
+.Toastify__toast-body {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+
+}
+
+.Toastify__toast {
+  padding: 2rem;
+  border-radius: 0;
+}
+
+.Toastify__close-button {
+  margin-left: 1.5rem;
+}
+.Toastify__toast-icon {
+  margin-right: 1.5rem;
+}
+
+
+/* [data-rk] svg * {
+  fill: #fff !important;
+} */
+
+button[aria-label="Close"] {
+  background-color: transparent !important;
+}

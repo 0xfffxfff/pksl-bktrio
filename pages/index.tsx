@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 // import Image from 'next/image';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import { useAccount, useContractRead, useContractWrite, useWaitForTransaction } from 'wagmi';
+import { chain, useAccount, useContractRead, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
 import contractInterface from '../contract-abi.json';
 import { utils } from 'ethers';
-
+import { toast, ToastContainer } from 'react-toastify';
+import { useAddRecentTransaction } from '@rainbow-me/rainbowkit'
+import { handleTxError } from '../common/handleTxError';
 const contractConfig = {
   addressOrName: '0x4449C90E437d345Db0C2848F0F6D8CfBDe55f547',
   contractInterface: contractInterface,
@@ -18,6 +20,8 @@ const Home: NextPage = () => {
   const [maxPerAddress, setMaxPerAddress] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { isConnected, address } = useAccount();
+  const { chain: activeChain } = useNetwork();
+  const addRecentTransaction = useAddRecentTransaction();
 
   const { data: balanceOfData } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: [address], enabled: isConnected, watch: true });
   const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'mintPrice', watch: false });
@@ -30,7 +34,7 @@ const Home: NextPage = () => {
   useEffect(() => { if (maxPerAddressData) setMaxPerAddress(maxPerAddressData.toNumber()); }, [maxPerAddressData]);
 
   const {
-    data: mintData, write: mint, isLoading: isMintLoading, isSuccess: isMintStarted, error: mintError,
+    data: mintData, writeAsync: mint, isLoading: isMintLoading, isSuccess: isMintStarted, error: mintError,
   } = useContractWrite({
     ...contractConfig, functionName: 'mint', args: [quantity], overrides: { value: mintPriceData?.mul(quantity), gasLimit: 2e6 }
   });
@@ -39,8 +43,44 @@ const Home: NextPage = () => {
   });
   const isMinted = txSuccess;
 
+  async function handleMint(e: MouseEvent | KeyboardEvent | TouchEvent, quantity: number) {
+    e.preventDefault();
+    try {
+      const tx = await mint();
+      const desc = `Minting ${quantity} Pksl Bktrios`;
+      toast.promise(
+        tx.wait(),
+        {
+          pending: desc,
+          success: `Minted ${quantity} Pksl Bktrios`,
+          error: `Failed to mint ${quantity} Pksl BKtrios`
+        },
+        {
+          onClick: () => {
+            const chainurl = activeChain?.id === chain.rinkeby.id ? chain.rinkeby.blockExplorers?.etherscan?.url : chain.mainnet.blockExplorers?.etherscan?.url
+            if (activeChain?.id !== chain.hardhat.id && chainurl) {
+              const url = `${chainurl}/tx/${tx.hash}`
+              window.open(url, '_blank')
+            }
+          },
+          closeButton: true,
+          closeOnClick: false
+        }
+      )
+      addRecentTransaction({
+        hash: tx.hash,
+        description: desc,
+      })
+      // tx.wait().then(() => {
+      //   if (tokensOfHeads) tokensOfHeads.refetch()
+      //   if (tokensOfBodies) tokensOfHeads.refetch()
+      //   if (tokensOfLegs) tokensOfHeads.refetch()
+      // })
+    } catch (error) { handleTxError(error) }
+  }
+
   return (
-    <div className="p-5 pb-10">
+    <div className="p-5">
 
       {/* LEFT SIDE */}
       <div className="flex flex-col sm:flex-row gap-10 sm:gap-5 lg:gap-10 items-stretch justify-items-stretch">
@@ -152,14 +192,12 @@ const Home: NextPage = () => {
               {/* <div className="flex items-center text-3xl">×</div> */}
               <button
                 className="py-5 px-16 bg-black text-white text-3xl"
-                disabled={isMintLoading || isMintStarted}
-                data-mint-loading={isMintLoading}
-                data-mint-started={isMintStarted}
-                onClick={() => mint()}
+                disabled={isMintLoading/* || isMintStarted*/}
+                onClick={(e) => handleMint(e, quantity)}
               >
                 {isMintLoading && 'Waiting for approval'}
-                {isMintStarted && 'Minting...'}
-                {!isMintLoading && !isMintStarted && ('Mint ' + quantity + ' pksl')}
+                {/* {isMintStarted && 'Minting...'} */}
+                {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
 
               </button>
             </div>
@@ -179,7 +217,22 @@ const Home: NextPage = () => {
         </div>
       </div>
 
-      <div className="text-2xl mt-20 leading-relaxed">
+      <div className="text-sm">
+        <ToastContainer
+          position="bottom-right"
+          autoClose={10000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          />
+      </div>
+
+      <div className="text-2xl mt-8 leading-relaxed">
         art by <a href="https://twitter.com/siggieggertsson" className="underline">Siggi Eggertson</a>,
         minting page made by ♥ <a href="https://0xfff.love" className="underline">0xfff</a>,
         contract deployed with <a href="https://indeliblelabs.io/" className="underline">indellible</a>
