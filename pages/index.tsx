@@ -95,15 +95,20 @@ const Home: NextPage = () => {
         <div className="basis-8/12 nobg-zinc-100 flex flex-col gap-5">
 
           {/* TOP ROW */}
-          <div className="flex items-start gap-5 lg:gap-10">
-            <img src="/media/pksl.png" className="w-1/2"/>
-            <div className="flex flex-col justify-between self-stretch gap-5 lg:gap-10">
+          <div className="flex gap-5 lg:gap-10">
+            <div className="w-6/12"><img src="/media/pksl.png" className="w-full"/></div>
+            <div className="w-6/12 flex flex-col justify-between gap-5 lg:gap-10">
               <div className="connectButton grow flex gap-5 lg:gap-10 flex-col items-end nobg-blue-400">
                   <ConnectButton accountStatus="address" />
               </div>
+              <div className="flex">
+                <img src="/media/telli.gif" className="w-1/3" />
+                <img src="/media/primma-morph.gif" className="w-1/3" />
+                <img src="/media/robba.gif" className="w-1/3" />
+              </div>
               <div className="flex justify-between items-end gap-5 lg:gap-10">
                 <img src="/media/excl.gif" className="w-6/12" />
-                <img src="/media/pkslgrid.png" className="w-5/12" />
+                <img src="/media/backgrounds.gif" className="w-5/12" />
               </div>
             </div>
           </div>
