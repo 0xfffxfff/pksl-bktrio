@@ -1,4 +1,6 @@
-# Mikrobes 
+# Mikrobes
+
+You will need to configure an `.env` or `.env.local` file from `.env.example` and provide the contract address and the alchemy api key.
 
 ---
 
