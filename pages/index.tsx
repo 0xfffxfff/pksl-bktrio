@@ -25,7 +25,7 @@ const Home: NextPage = () => {
   const { chain: activeChain } = useNetwork();
   const addRecentTransaction = useAddRecentTransaction();
 
-  const { data: balanceOfData } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: [address], enabled: isConnected, watch: true });
+  const { data: balanceOfData } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: address, enabled: isConnected, watch: true });
   const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'mintPrice', watch: false });
   const { data: totalSupplyData } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
   // const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
