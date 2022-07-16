@@ -1,5 +1,7 @@
 import { initializeAlchemy, getNftsForOwner, Network, OwnedNft } from '@alch/alchemy-sdk';
 import { useEffect, useState } from 'react';
+import { chain } from 'wagmi';
+import { useNetwork } from 'wagmi';
 
 const alchemy = initializeAlchemy({
   apiKey: process.env.NEXT_PUBLIC_ANALYTICS_ID,
@@ -7,6 +9,7 @@ const alchemy = initializeAlchemy({
 });
 
 export default function OwnedGrid({ ...props }) {
+  const { chain: activeChain } = useNetwork();
   const { address, nonce, ...forwardProps } = props;
   const [nfts, setNfts] = useState<OwnedNft[]>([]);
 
@@ -32,8 +35,26 @@ export default function OwnedGrid({ ...props }) {
           <div className="flex gap-2 justify-between mt-2 text-xs">
             <div className="text-left">{n.tokenId}</div>
             <ul className="flex">
-              <li><a href="#" className="flex gap-2"><img src="/media/opensea.png" alt="" className="h-[1em]" /></a></li>
-              <li><a href="#" className="flex gap-2"><img src="/media/looksrare.png" alt="" className="h-[1em]" /></a></li>
+              <li>
+                <a
+                  href={`https://${activeChain?.id === chain.rinkeby.id ? "testnets." : ""}opensea.io/assets/${activeChain?.id === chain.rinkeby.id ? "rinkeby" : "ethereum"}/${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}/${n.tokenId}`}
+                  className="flex gap-2"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  <img src="/media/opensea.png" alt="" className="h-[1em]" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`https://${activeChain?.id === chain.rinkeby.id ? "rinkeby." : ""}looksrare.org/collections/${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}/${n.tokenId}`}
+                  className="flex gap-2"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  <img src="/media/looksrare.png" alt="" className="h-[1em]" />
+                </a>
+              </li>
             </ul>
           </div>
         </div>
