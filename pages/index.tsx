@@ -10,6 +10,12 @@ import { useAddRecentTransaction } from '@rainbow-me/rainbowkit'
 import { handleTxError } from '../common/handleTxError';
 import OwnedGrid from '../components/OwnedGrid';
 import PublicLinkList from '../components/PublicLinkList';
+import axios from 'axios';
+
+import allowlist from '../allowlist';
+import AllowlistTree from '../common/AllowlistTree';
+
+const tree = new AllowlistTree(allowlist);
 
 const contractConfig = {
   addressOrName: (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string),
@@ -21,25 +27,47 @@ const Home: NextPage = () => {
   const [totalMinted, setTotalMinted] = useState(0);
   const [maxSupply, setMaxSupply] = useState(4096);
   const [maxPerAddress, setMaxPerAddress] = useState(0);
+  const [maxPerAllowlist, setMaxPerAllowlist] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { isConnected, address } = useAccount();
   const { chain: activeChain } = useNetwork();
   const addRecentTransaction = useAddRecentTransaction();
+  const [isOnAllowList, setIsOnAllowList] = useState(false);
+  const [isAllowListActive, setIsAllowListActive] = useState(false);
+  const [isMintActive, setIsMintActive] = useState(false);
+  const [isPublicMintActive, setIsPublicMintActive] = useState(false);
+
+  useEffect(() => {
+    console.log(address, allowlist.find((e) => e.address.toLowerCase() === address?.toLowerCase()));
+    setIsOnAllowList(
+      isConnected && address
+      ? !!(allowlist.find((e) => e.address.toLowerCase() === address?.toLowerCase()))
+      : false
+    )
+  }, [isConnected, address])
 
   const { data: balanceOfData } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: address, enabled: isConnected, watch: true });
-  const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'mintPrice', watch: false });
+  // const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'publicMintPrice', watch: false });
   const { data: totalSupplyData } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
+  const { data: isAllowListActiveData } = useContractRead({ ...contractConfig, functionName: 'isAllowListActive', watch: true });
+  const { data: isMintActiveData } = useContractRead({ ...contractConfig, functionName: 'isMintActive', watch: true });
+  const { data: isPublicMintActiveData } = useContractRead({ ...contractConfig, functionName: 'isPublicMintActive', watch: true });
   // const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
   const { data: maxPerAddressData } = useContractRead({ ...contractConfig, functionName: 'maxPerAddress', watch: false });
+  const { data: maxPerAllowlistData } = useContractRead({ ...contractConfig, functionName: 'maxPerAllowList', watch: false });
   useEffect(() => { if (balanceOfData) setBalanceOf(balanceOfData.toNumber()); }, [balanceOfData]);
   useEffect(() => { if (totalSupplyData) setTotalMinted(totalSupplyData.toNumber()); }, [totalSupplyData]);
+  useEffect(() => { if (isMintActiveData) setIsMintActive(!!isMintActiveData); }, [isMintActiveData]);
+  useEffect(() => { if (isPublicMintActiveData) setIsPublicMintActive(!!isPublicMintActiveData); }, [isPublicMintActiveData]);
+  useEffect(() => { if (isAllowListActiveData) setIsAllowListActive(!!isAllowListActiveData); }, [isAllowListActiveData]);
   // useEffect(() => { if (maxSupplyData) setMaxSupply(maxSupplyData.toNumber()); }, [maxSupplyData]);
   useEffect(() => { if (maxPerAddressData) setMaxPerAddress(maxPerAddressData.toNumber()); }, [maxPerAddressData]);
+  useEffect(() => { if (maxPerAllowlistData) setMaxPerAllowlist(maxPerAllowlistData.toNumber()); }, [maxPerAllowlistData]);
 
   const {
     data: mintData, writeAsync: mint, isLoading: isMintLoading, isSuccess: isMintStarted, error: mintError,
   } = useContractWrite({
-    ...contractConfig, functionName: 'mint', args: [quantity], overrides: { value: mintPriceData?.mul(quantity), gasLimit: 2e6 }
+    ...contractConfig, functionName: 'mint', args: [quantity, tree.getProofForAddress(address ?? '')], overrides: { /*value: mintPriceData?.mul(quantity),*/ gasLimit: 2e6 }
   });
   const { isSuccess: txSuccess, error: txError } = useWaitForTransaction({
     hash: mintData?.hash,
@@ -162,51 +190,76 @@ const Home: NextPage = () => {
             </svg>
           </div>
           <div>
-            {/* MINT (isConnected: {isConnected ? 'true' : 'false'}) */}
             {/* MINT */}
             <div>
-              { isConnected && !activeChain?.unsupported
-                ? <div className="flex gap-5">
-                    <div>
-                      <label htmlFor={`quantity`} className="sr-only">
-                        Quantity
-                      </label>
-                      <div className="relative">
-                        <select
-                          id={`quantity`}
-                          name={`quantity`}
-                          className="max-w-full bg-black text-white pl-6 pr-12 py-5 text-center text-3xl appearance-none"
-                          onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
-                          value={quantity}
-                        >
-                          {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
-                            <option value={i+1} key={i+1}>{i+1}</option>
-                          )}
-                        </select>
-                        <div className="absolute right-4 top-0 bottom-0 w-5 flex items-center pointer-events-none">
-                          <img src="/media/arrow.png" className="w-5" />
+              {
+                isMintActive && (isPublicMintActive || (isAllowListActive && isOnAllowList))
+                ? isConnected && !activeChain?.unsupported
+                  ? <div className="flex gap-5">
+                      <div>
+                        <label htmlFor={`quantity`} className="sr-only">
+                          Quantity
+                        </label>
+                        <div className="relative">
+                          <select
+                            id={`quantity`}
+                            name={`quantity`}
+                            className="max-w-full bg-black text-white pl-6 pr-12 py-5 text-center text-3xl appearance-none"
+                            onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
+                            value={quantity}
+                          >
+                            {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
+                              <option value={i+1} key={i+1}>{i+1}</option>
+                            )}
+                          </select>
+                          <div className="absolute right-4 top-0 bottom-0 w-5 flex items-center pointer-events-none">
+                            <img src="/media/arrow.png" className="w-5" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  {/* <div className="flex items-center text-3xl">×</div> */}
-                    <button
-                      className="py-5 px-16 bg-black text-white text-3xl"
-                      disabled={isMintLoading/* || isMintStarted*/}
-                      onClick={(e) => handleMint(quantity)}
-                    >
-                      {isMintLoading && 'Waiting for approval'}
-                      {/* {isMintStarted && 'Minting...'} */}
-                      {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
+                    {/* <div className="flex items-center text-3xl">×</div> */}
+                      <button
+                        className="py-5 px-16 bg-black text-white text-3xl"
+                        disabled={isMintLoading/* || isMintStarted*/}
+                        onClick={(e) => handleMint(quantity)}
+                      >
+                        {isMintLoading && 'Waiting for approval'}
+                        {/* {isMintStarted && 'Minting...'} */}
+                        {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
 
-                    </button>
-                  </div>
-                : <div className={"connectButton connectButton--large text-3xl " + (activeChain?.unsupported ? "connectButton--unsupported" : "")}>
-                    <ConnectButton accountStatus="address" />
-                  </div>
+                      </button>
+                    </div>
+                  : <div className={"connectButton connectButton--large text-3xl " + (activeChain?.unsupported ? "connectButton--unsupported" : "")}>
+                      <ConnectButton accountStatus="address" />
+                    </div>
+                : <button
+                    className="py-5 px-16 bg-black text-white text-3xl"
+                    disabled={true}
+                  >
+                    { isAllowListActive && !isOnAllowList ? 'Not on allow list.' : ''}
+                  </button>
               }
             </div>
             <p className="mt-3">
-              {balanceOf > 0 ? ('You already own ' + balanceOf + ' pksl bktrios.') : ''} You can mint up to {maxPerAddress - balanceOf} {balanceOf > 0 ? 'more.' : 'pksl bktrios.'}
+              {
+                !isAllowListActive && !isMintActive
+                ? 'minting is not active.'
+                : isAllowListActive
+                  ? 'allow list minting is active.'
+                  : 'public minting is active.'
+              }
+              <br/>
+              {/* isAllowListActive: {isAllowListActive ? 'true' : 'false'}<br/>
+              isOnAllowList: {isOnAllowList ? 'true' : 'false'}<br/>
+              isMintActive: {isMintActive ? 'true' : 'false'}<br/> */}
+              { isMintActive && ((isAllowListActive && isOnAllowList) || isPublicMintActive)
+                ? `${balanceOf > 0 ? ('You already own ' + balanceOf + ' pksl bktrios.') : ''} You can mint up to ${(isAllowListActive ? maxPerAllowlist : maxPerAddress) - balanceOf} ${balanceOf > 0 ? 'more.' : 'pksl bktrios.'}`
+                : isAllowListActive && !isOnAllowList
+                  ? 'You are not on the allow list.'
+                  : ''
+              }
+              {/* <br/> */}
+              {/* {isAllowListActive || isMintActive ? `max mint per address: ${isAllowListActive ? maxPerAllowlist : maxPerAddress} (${isAllowListActive ? 'allow list' : 'public'})` : ''} */}
             </p>
 
             {/* <p>
