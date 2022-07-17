@@ -165,7 +165,7 @@ const Home: NextPage = () => {
             {/* MINT (isConnected: {isConnected ? 'true' : 'false'}) */}
             {/* MINT */}
             <div>
-              { isConnected
+              { isConnected && !activeChain?.unsupported
                 ? <div className="flex gap-5">
                     <div>
                       <label htmlFor={`quantity`} className="sr-only">
@@ -200,7 +200,7 @@ const Home: NextPage = () => {
 
                     </button>
                   </div>
-                : <div className='connectButton connectButton--large text-3xl'>
+                : <div className={"connectButton connectButton--large text-3xl " + (activeChain?.unsupported ? "connectButton--unsupported" : "")}>
                     <ConnectButton accountStatus="address" />
                   </div>
               }

@@ -106,6 +106,9 @@ img:not(.non-pixelated) {
   }
 }
 
+.connectButton--unsupported button > div {
+  height: auto !important;
+}
 
 
 :root {
