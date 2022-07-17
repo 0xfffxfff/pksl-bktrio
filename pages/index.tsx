@@ -249,9 +249,9 @@ const Home: NextPage = () => {
       </div>
 
       <div className="text-2xl mt-8 leading-relaxed">
-        art by <a href="https://twitter.com/siggieggertsson" className="underline">Siggi Eggertson</a>,
-        minting page made by ♥ <a href="https://0xfff.love" className="underline">0xfff</a>,
-        contract deployed with <a href="https://indeliblelabs.io/" className="underline">indellible</a>
+        art by <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/siggieggertsson" className="underline">Siggi Eggertson</a>,
+        minting page made by ♥ <a target="_blank" rel="noopener noreferrer" href="https://0xfff.love" className="underline">0xfff</a>,
+        contract deployed with <a target="_blank" rel="noopener noreferrer" href="https://indeliblelabs.io/" className="underline">indellible</a>
       </div>
     </div>
   );
