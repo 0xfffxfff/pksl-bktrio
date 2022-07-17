@@ -193,51 +193,58 @@ const Home: NextPage = () => {
             {/* MINT */}
             <div>
               {
-                isMintActive && (isPublicMintActive || (isAllowListActive && isOnAllowList))
-                ? isConnected && !activeChain?.unsupported
-                  ? <div className="flex gap-5">
-                      <div>
-                        <label htmlFor={`quantity`} className="sr-only">
-                          Quantity
-                        </label>
-                        <div className="relative">
-                          <select
-                            id={`quantity`}
-                            name={`quantity`}
-                            className="max-w-full bg-black text-white pl-6 pr-12 py-5 text-center text-3xl appearance-none"
-                            onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
-                            value={quantity}
-                          >
-                            {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
-                              <option value={i+1} key={i+1}>{i+1}</option>
-                            )}
-                          </select>
-                          <div className="absolute right-4 top-0 bottom-0 w-5 flex items-center pointer-events-none">
-                            <img src="/media/arrow.png" className="w-5" />
-                          </div>
-                        </div>
-                      </div>
-                    {/* <div className="flex items-center text-3xl">×</div> */}
-                      <button
-                        className="py-5 px-16 bg-black text-white text-3xl"
-                        disabled={isMintLoading/* || isMintStarted*/}
-                        onClick={(e) => handleMint(quantity)}
-                      >
-                        {isMintLoading && 'Waiting for approval'}
-                        {/* {isMintStarted && 'Minting...'} */}
-                        {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
-
-                      </button>
-                    </div>
-                  : <div className={"connectButton connectButton--large text-3xl " + (activeChain?.unsupported ? "connectButton--unsupported" : "")}>
-                      <ConnectButton accountStatus="address" />
-                    </div>
-                : <button
+                totalMinted >= maxSupply
+                ? <button
                     className="py-5 px-16 bg-black text-white text-3xl"
                     disabled={true}
                   >
-                    { isAllowListActive && !isOnAllowList ? 'Not on allow list.' : ''}
+                    Minted out
                   </button>
+                : isMintActive && (isPublicMintActive || (isAllowListActive && isOnAllowList))
+                  ? isConnected && !activeChain?.unsupported
+                    ? <div className="flex gap-5">
+                        <div>
+                          <label htmlFor={`quantity`} className="sr-only">
+                            Quantity
+                          </label>
+                          <div className="relative">
+                            <select
+                              id={`quantity`}
+                              name={`quantity`}
+                              className="max-w-full bg-black text-white pl-6 pr-12 py-5 text-center text-3xl appearance-none"
+                              onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
+                              value={quantity}
+                            >
+                              {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
+                                <option value={i+1} key={i+1}>{i+1}</option>
+                              )}
+                            </select>
+                            <div className="absolute right-4 top-0 bottom-0 w-5 flex items-center pointer-events-none">
+                              <img src="/media/arrow.png" className="w-5" />
+                            </div>
+                          </div>
+                        </div>
+                      {/* <div className="flex items-center text-3xl">×</div> */}
+                        <button
+                          className="py-5 px-16 bg-black text-white text-3xl"
+                          disabled={isMintLoading/* || isMintStarted*/}
+                          onClick={(e) => handleMint(quantity)}
+                        >
+                          {isMintLoading && 'Waiting for approval'}
+                          {/* {isMintStarted && 'Minting...'} */}
+                          {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
+
+                        </button>
+                      </div>
+                    : <div className={"connectButton connectButton--large text-3xl " + (activeChain?.unsupported ? "connectButton--unsupported" : "")}>
+                        <ConnectButton accountStatus="address" />
+                      </div>
+                  : <button
+                      className="py-5 px-16 bg-black text-white text-3xl"
+                      disabled={true}
+                    >
+                      { isAllowListActive && !isOnAllowList ? 'Not on allow list' : ''}
+                    </button>
               }
             </div>
             <p className="mt-3">
