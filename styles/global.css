@@ -77,14 +77,35 @@ img:not(.non-pixelated) {
 .connectButton button {
   background-color: #000 !important;
 }
-@media screen and (min-width: 768px) {
+@media (max-width: 639px) {
+  .connectButton button {
+    width: 100%;
+    text-align: center !important;
+  }
+}
+
+.connectButton button {
+  height: auto !important;
+  min-height: 40px;
+}
+
+@media screen and (min-width: 640px) {
   .connectButton button {
     font-size: 2vw !important;
   }
-  .connectButton button {
-    height: auto !important;
+}
+
+.connectButton--large button {
+  font-size: 3rem !important;
+  padding: 0.5rem 2rem !important;
+}
+@media screen and (min-width: 1280px) {
+  .connectButton--large button {
+    font-size: 5rem !important;
+    padding: 1rem 4rem !important;
   }
 }
+
 
 
 :root {

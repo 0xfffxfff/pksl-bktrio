@@ -9,6 +9,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useAddRecentTransaction } from '@rainbow-me/rainbowkit'
 import { handleTxError } from '../common/handleTxError';
 import OwnedGrid from '../components/OwnedGrid';
+import PublicLinkList from '../components/PublicLinkList';
 
 const contractConfig = {
   addressOrName: (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string),
@@ -83,9 +84,11 @@ const Home: NextPage = () => {
   return (
     <div className="p-5">
 
-      {/* LEFT SIDE */}
+
       <div className="flex flex-col sm:flex-row gap-10 sm:gap-5 lg:gap-10 items-stretch justify-items-stretch">
-        <div className="basis-4/12 flex flex-col gap-10">
+
+        {/* LEFT SIDE */}
+        <div className="basis-4/12 flex flex-col gap-5 md:gap-10">
 
           <div className="flex gap-5 sm:gap-10 items-start">
             {/* <FluffiFace className="w-full sm:min-h-[75px] lg:min-h-[150px]" /> */}
@@ -109,7 +112,7 @@ const Home: NextPage = () => {
             <img src="/media/heads-grid.gif" className="w-[30%]" />
           </div>
 
-          <div><img src="/media/mrgm1.png" className="w-full" /></div>
+          <div className="hidden sm:block"><img src="/media/mrgm1.png" className="w-full" /></div>
 
           <svg viewBox="0 0 195 22">
             <text x="0" y="20">mint now. it&apos;s free.</text>
@@ -120,15 +123,8 @@ const Home: NextPage = () => {
             <img src="/media/pakki-expand.gif" className="w-5/12" />
           </div>
 
-          <div className="flex gap-5 lg:gap-10 sm:flex-col lg:flex-row text-2xl sm:text-lg xl:text-2xl 2xl:text-3xl">
-            <ul className="space-y-5 lg:space-y-10 w-1/2">
-              <li><a target="_blank" rel="noopener noreferrer" href="http://discord.bktr.io" className="flex gap-2"><img src="/media/discord.png" alt="" className="h-[1.4em]" /> Discord</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/bktr_io"  className="flex gap-2"><img src="/media/twitter.png" alt="" className="h-[1.4em]" /> Twitter</a></li>
-            </ul>
-            <ul className="space-y-5 lg:space-y-10 w-1/2">
-              <li><a target="_blank" rel="noopener noreferrer" href={`https://${activeChain?.id === chain.rinkeby.id ? "testnets." : ""}opensea.io/assets/${activeChain?.id === chain.rinkeby.id ? "rinkeby" : "ethereum"}/${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}/0`}  className="flex gap-2"><img src="/media/opensea.png" alt="" className="h-[1.4em]" /> OpenSea</a></li>
-              <li><a target="_blank" rel="noopener noreferrer" href={`https://${activeChain?.id === chain.rinkeby.id ? "rinkeby." : ""}looksrare.org/collections/${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`} className="flex gap-2"><img src="/media/looksrare.png" alt="" className="h-[1.4em]" /> LooksRare</a></li>
-            </ul>
+          <div className="hidden sm:block">
+            <PublicLinkList />
           </div>
         </div>
 
@@ -139,7 +135,7 @@ const Home: NextPage = () => {
           <div className="flex gap-5 lg:gap-10">
             <div className="w-6/12"><img src="/media/pksl.png" className="w-full"/></div>
             <div className="w-6/12 flex flex-col justify-between gap-5 lg:gap-10">
-              <div className="connectButton grow flex gap-5 lg:gap-10 flex-col items-end nobg-blue-400">
+              <div className="connectButton grow flex gap-5 lg:gap-10 flex-col items-stretch sm:items-end top-5 right-5">
                   <ConnectButton accountStatus="address" />
               </div>
               <div className="flex">
@@ -168,39 +164,46 @@ const Home: NextPage = () => {
           <div>
             {/* MINT (isConnected: {isConnected ? 'true' : 'false'}) */}
             {/* MINT */}
-            <div className="flex gap-5">
-              <div>
-                <label htmlFor={`quantity`} className="sr-only">
-                  Quantity
-                </label>
-                <div className="relative">
-                  <select
-                    id={`quantity`}
-                    name={`quantity`}
-                    className="max-w-full bg-black text-white pl-6 pr-12 py-5 text-center text-3xl appearance-none"
-                    onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
-                    value={quantity}
-                  >
-                    {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
-                      <option value={i+1} key={i+1}>{i+1}</option>
-                    )}
-                  </select>
-                  <div className="absolute right-4 top-0 bottom-0 w-5 flex items-center pointer-events-none">
-                    <img src="/media/arrow.png" className="w-5" />
-                  </div>
-                </div>
-              </div>
-              {/* <div className="flex items-center text-3xl">×</div> */}
-              <button
-                className="py-5 px-16 bg-black text-white text-3xl"
-                disabled={isMintLoading/* || isMintStarted*/}
-                onClick={(e) => handleMint(quantity)}
-              >
-                {isMintLoading && 'Waiting for approval'}
-                {/* {isMintStarted && 'Minting...'} */}
-                {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
+            <div>
+              { isConnected
+                ? <div className="flex gap-5">
+                    <div>
+                      <label htmlFor={`quantity`} className="sr-only">
+                        Quantity
+                      </label>
+                      <div className="relative">
+                        <select
+                          id={`quantity`}
+                          name={`quantity`}
+                          className="max-w-full bg-black text-white pl-6 pr-12 py-5 text-center text-3xl appearance-none"
+                          onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
+                          value={quantity}
+                        >
+                          {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
+                            <option value={i+1} key={i+1}>{i+1}</option>
+                          )}
+                        </select>
+                        <div className="absolute right-4 top-0 bottom-0 w-5 flex items-center pointer-events-none">
+                          <img src="/media/arrow.png" className="w-5" />
+                        </div>
+                      </div>
+                    </div>
+                  {/* <div className="flex items-center text-3xl">×</div> */}
+                    <button
+                      className="py-5 px-16 bg-black text-white text-3xl"
+                      disabled={isMintLoading/* || isMintStarted*/}
+                      onClick={(e) => handleMint(quantity)}
+                    >
+                      {isMintLoading && 'Waiting for approval'}
+                      {/* {isMintStarted && 'Minting...'} */}
+                      {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
 
-              </button>
+                    </button>
+                  </div>
+                : <div className='connectButton connectButton--large text-3xl'>
+                    <ConnectButton accountStatus="address" />
+                  </div>
+              }
             </div>
             <p className="mt-3">
               {balanceOf > 0 ? ('You already own ' + balanceOf + ' pksl bktrios.') : ''} You can mint up to {maxPerAddress - balanceOf} {balanceOf > 0 ? 'more.' : 'pksl bktrios.'}
@@ -212,8 +215,13 @@ const Home: NextPage = () => {
             </p> */}
 
           </div>
+
           <div className="text-3xl lg:text-5xl" style={{ lineHeight: 1.4 }}>pksl bktrios are a new on-chain strain of the original bktr.io. <br/>
             brutally pixelated, irregularly animated, randomly combined, visually surprising. clean, cute, scary, overwhelming, brimming with life.
+          </div>
+
+          <div className="block sm:hidden">
+            <PublicLinkList />
           </div>
         </div>
       </div>
