@@ -272,7 +272,7 @@ const Home: NextPage = () => {
 
       { isConnected ?
         <div className="mt-10">
-          <h2 className="text-6xl mb-7">you own {balanceOf} pksel bktrios <img src="/media/fluffi-climb-crop.gif" alt="" className="inline-block h-[1em]" /></h2>
+          <h2 className="text-6xl mb-7">you own {balanceOf} pksl bktrios <img src="/media/fluffi-climb-crop.gif" alt="" className="inline-block h-[1em]" /></h2>
           <OwnedGrid address={address} nonce={balanceOf} />
         </div>
       : null }
