@@ -28,8 +28,8 @@ const { chains, provider, webSocketProvider } = configureChains(
       : []),
   ],
   [
-    alchemyProvider({ alchemyId: process.env.NEXT_PUBLIC_ALCHEMY_APIKEY }),
     publicProvider(),
+    alchemyProvider({ alchemyId: process.env.NEXT_PUBLIC_ALCHEMY_APIKEY }),
   ]
 );
 
