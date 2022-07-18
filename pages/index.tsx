@@ -34,7 +34,6 @@ const Home: NextPage = () => {
   const addRecentTransaction = useAddRecentTransaction();
   const [isOnAllowList, setIsOnAllowList] = useState(false);
   const [isAllowListActive, setIsAllowListActive] = useState(false);
-  const [isMintActive, setIsMintActive] = useState(false);
   const [isPublicMintActive, setIsPublicMintActive] = useState(false);
 
   useEffect(() => {
@@ -50,17 +49,15 @@ const Home: NextPage = () => {
   // const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'publicMintPrice', watch: false });
   const { data: totalSupplyData } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
   const { data: isAllowListActiveData } = useContractRead({ ...contractConfig, functionName: 'isAllowListActive', watch: true });
-  const { data: isMintActiveData } = useContractRead({ ...contractConfig, functionName: 'isMintActive', watch: true });
   const { data: isPublicMintActiveData } = useContractRead({ ...contractConfig, functionName: 'isPublicMintActive', watch: true });
-  // const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
+  const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
   const { data: maxPerAddressData } = useContractRead({ ...contractConfig, functionName: 'maxPerAddress', watch: false });
   const { data: maxPerAllowlistData } = useContractRead({ ...contractConfig, functionName: 'maxPerAllowList', watch: false });
   useEffect(() => { if (balanceOfData) setBalanceOf(balanceOfData.toNumber()); }, [balanceOfData]);
   useEffect(() => { if (totalSupplyData) setTotalMinted(totalSupplyData.toNumber()); }, [totalSupplyData]);
-  useEffect(() => { if (isMintActiveData) setIsMintActive(!!isMintActiveData); }, [isMintActiveData]);
   useEffect(() => { if (isPublicMintActiveData) setIsPublicMintActive(!!isPublicMintActiveData); }, [isPublicMintActiveData]);
   useEffect(() => { if (isAllowListActiveData) setIsAllowListActive(!!isAllowListActiveData); }, [isAllowListActiveData]);
-  // useEffect(() => { if (maxSupplyData) setMaxSupply(maxSupplyData.toNumber()); }, [maxSupplyData]);
+  useEffect(() => { if (maxSupplyData) setMaxSupply(maxSupplyData.toNumber()); }, [maxSupplyData]);
   useEffect(() => { if (maxPerAddressData) setMaxPerAddress(maxPerAddressData.toNumber()); }, [maxPerAddressData]);
   useEffect(() => { if (maxPerAllowlistData) setMaxPerAllowlist(maxPerAllowlistData.toNumber()); }, [maxPerAllowlistData]);
 
@@ -200,7 +197,7 @@ const Home: NextPage = () => {
                   >
                     Minted out
                   </button>
-                : isMintActive && (isPublicMintActive || (isAllowListActive && isOnAllowList))
+                : isPublicMintActive || (isAllowListActive && isOnAllowList)
                   ? isConnected && !activeChain?.unsupported
                     ? <div className="flex gap-5">
                         <div>
@@ -215,7 +212,7 @@ const Home: NextPage = () => {
                               onChange={(e) => setQuantity(parseInt(e?.target?.value, 10))}
                               value={quantity}
                             >
-                              {[...Array((maxPerAddress - balanceOf))].map((e, i) =>
+                              {[...Array(((isPublicMintActive ? maxPerAddress : maxPerAllowlist) - balanceOf))].map((e, i) =>
                                 <option value={i+1} key={i+1}>{i+1}</option>
                               )}
                             </select>
@@ -243,30 +240,25 @@ const Home: NextPage = () => {
                       className="py-5 px-16 bg-black text-white text-3xl"
                       disabled={true}
                     >
-                      { isAllowListActive && !isOnAllowList ? 'Not on allow list' : ''}
+                      { !isPublicMintActive && isAllowListActive && !isOnAllowList ? 'Not on allow list' : 'Minting not active'}
                     </button>
               }
             </div>
             <p className="mt-3">
               {
-                !isAllowListActive && !isMintActive
+                !isAllowListActive && !isPublicMintActive
                 ? 'minting is not active.'
-                : isAllowListActive
+                : !isPublicMintActive && isAllowListActive
                   ? 'allow list minting is active.'
                   : 'public minting is active.'
               }
               <br/>
-              {/* isAllowListActive: {isAllowListActive ? 'true' : 'false'}<br/>
-              isOnAllowList: {isOnAllowList ? 'true' : 'false'}<br/>
-              isMintActive: {isMintActive ? 'true' : 'false'}<br/> */}
-              { isMintActive && ((isAllowListActive && isOnAllowList) || isPublicMintActive)
-                ? `${balanceOf > 0 ? ('You already own ' + balanceOf + ' pksl bktrios.') : ''} You can mint up to ${(isAllowListActive ? maxPerAllowlist : maxPerAddress) - balanceOf} ${balanceOf > 0 ? 'more.' : 'pksl bktrios.'}`
-                : isAllowListActive && !isOnAllowList
+              { (isAllowListActive && isOnAllowList) || isPublicMintActive
+                ? `${balanceOf > 0 ? ('You already own ' + balanceOf + ' pksl bktrios.') : ''} You can mint up to ${(isPublicMintActive ? maxPerAddress : maxPerAllowlist) - balanceOf} ${balanceOf > 0 ? 'more.' : 'pksl bktrios.'}`
+                : !isPublicMintActive && isAllowListActive && !isOnAllowList
                   ? 'You are not on the allow list.'
                   : ''
               }
-              {/* <br/> */}
-              {/* {isAllowListActive || isMintActive ? `max mint per address: ${isAllowListActive ? maxPerAllowlist : maxPerAddress} (${isAllowListActive ? 'allow list' : 'public'})` : ''} */}
             </p>
 
             {/* <p>
