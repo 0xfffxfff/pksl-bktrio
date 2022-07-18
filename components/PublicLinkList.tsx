@@ -10,7 +10,7 @@ export default function PublicLinkList() {
         <li><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/bktr_io"  className="flex gap-2"><img src="/media/twitter.png" alt="" className="h-[1.4em]" /> Twitter</a></li>
       </ul>
       <ul className="space-y-5 lg:space-y-10 w-1/2">
-        <li><a target="_blank" rel="noopener noreferrer" href={`https://${activeChain?.id === chain.rinkeby.id ? "testnets." : ""}opensea.io/assets/${activeChain?.id === chain.rinkeby.id ? "rinkeby" : "ethereum"}/${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}/0`}  className="flex gap-2"><img src="/media/opensea.png" alt="" className="h-[1.4em]" /> OpenSea</a></li>
+        <li><a target="_blank" rel="noopener noreferrer" href={`https://${activeChain?.id === chain.rinkeby.id ? "testnets." : ""}opensea.io/collection/pksl`}  className="flex gap-2"><img src="/media/opensea.png" alt="" className="h-[1.4em]" /> OpenSea</a></li>
         <li><a target="_blank" rel="noopener noreferrer" href={`https://${activeChain?.id === chain.rinkeby.id ? "rinkeby." : ""}looksrare.org/collections/${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`} className="flex gap-2"><img src="/media/looksrare.png" alt="" className="h-[1.4em]" /> LooksRare</a></li>
       </ul>
     </div>
