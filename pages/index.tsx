@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-// import Image from 'next/image';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
 import { chain, useAccount, useContractRead, useContractWrite, useNetwork, useWaitForTransaction } from 'wagmi';
 import contractInterface from '../contract-abi.json';
-import { utils } from 'ethers';
 import { toast, ToastContainer } from 'react-toastify';
 import { useAddRecentTransaction } from '@rainbow-me/rainbowkit'
 import { handleTxError } from '../common/handleTxError';
 import OwnedGrid from '../components/OwnedGrid';
 import PublicLinkList from '../components/PublicLinkList';
-import axios from 'axios';
 
 import allowlist from '../allowlist';
 import AllowlistTree from '../common/AllowlistTree';
@@ -44,9 +41,9 @@ const Home: NextPage = () => {
     )
   }, [isConnected, address])
 
-  const { data: balanceOfData } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: address, enabled: isConnected, watch: true });
+  const { data: balanceOfData, refetch: refetchBalanceOf } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: address, enabled: isConnected, watch: true });
   // const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'publicMintPrice', watch: false });
-  const { data: totalSupplyData } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
+  const { data: totalSupplyData, refetch: refetchTotalSupply } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
   const { data: isAllowListActiveData } = useContractRead({ ...contractConfig, functionName: 'isAllowListActive', watch: true });
   const { data: isPublicMintActiveData } = useContractRead({ ...contractConfig, functionName: 'isPublicMintActive', watch: true });
   const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply' });
@@ -92,16 +89,14 @@ const Home: NextPage = () => {
           closeButton: true,
           closeOnClick: false
         }
-      )
+      ).then(() => {
+        refetchBalanceOf();
+        refetchTotalSupply();
+      })
       addRecentTransaction({
         hash: tx.hash,
         description: desc,
       })
-      // tx.wait().then(() => {
-      //   if (tokensOfHeads) tokensOfHeads.refetch()
-      //   if (tokensOfBodies) tokensOfHeads.refetch()
-      //   if (tokensOfLegs) tokensOfHeads.refetch()
-      // })
     } catch (error) { handleTxError(error) }
   }
 
@@ -220,14 +215,12 @@ const Home: NextPage = () => {
                             </div>
                           </div>
                         </div>
-                      {/* <div className="flex items-center text-3xl">×</div> */}
                         <button
                           className="py-5 px-16 bg-black text-white text-3xl"
                           disabled={isMintLoading/* || isMintStarted*/}
                           onClick={(e) => handleMint(quantity)}
                         >
                           {isMintLoading && 'Waiting for approval'}
-                          {/* {isMintStarted && 'Minting...'} */}
                           {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
 
                         </button>
