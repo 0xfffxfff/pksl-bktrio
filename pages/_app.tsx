@@ -17,6 +17,8 @@ import {
 import { chain, createClient, configureChains, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
+import { DefaultSeo } from 'next-seo';
+import Head from 'next/head';
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
@@ -142,6 +144,34 @@ function App({ Component, pageProps }: AppProps) {
           </RainbowKitProvider>
         </WagmiConfig>
       </div>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <DefaultSeo
+        title="pksl bktrio"
+        description="pksl bktrios are a new on-chain strain of the original bktr.io. brutally pixelated, irregularly animated, randomly combined, visually surprising. clean, cute, scary, overwhelming, brimming with life."
+        canonical="https://pksl.bktr.io"
+        openGraph={{
+          url: 'https://pksl.bktr.io',
+          title: 'pksl bktrio',
+          description: 'pksl bktrios are a new on-chain strain of the original bktr.io. brutally pixelated, irregularly animated, randomly combined, visually surprising. clean, cute, scary, overwhelming, brimming with life.',
+          images: [
+            {
+              url: 'https://pksl.bktr.io/og-image.jpg',
+              width: 1800,
+              height: 1280,
+              alt: 'pksl bktrio',
+              type: 'image/jpeg',
+            }
+          ],
+          site_name: 'pksl bktrio',
+        }}
+        twitter={{
+          handle: '@bktr_io',
+          site: '@site',
+          cardType: 'summary_large_image',
+        }}
+      />
     </>
   );
 }
