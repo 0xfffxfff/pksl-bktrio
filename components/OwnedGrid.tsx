@@ -5,7 +5,7 @@ import { useNetwork } from 'wagmi';
 
 const alchemy = initializeAlchemy({
   apiKey: process.env.NEXT_PUBLIC_ANALYTICS_ID,
-  network: Network.ETH_RINKEBY
+  network: Network.ETH_MAINNET
 });
 
 export default function OwnedGrid({ ...props }) {
