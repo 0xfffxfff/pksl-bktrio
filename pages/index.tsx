@@ -37,7 +37,6 @@ const Home: NextPage = () => {
   const [isPublicMintActive, setIsPublicMintActive] = useState(false);
 
   useEffect(() => {
-    console.log(address, allowlist.find((e) => e.address.toLowerCase() === address?.toLowerCase()));
     setIsOnAllowList(
       isConnected && address
       ? !!(allowlist.find((e) => e.address.toLowerCase() === address?.toLowerCase()))
@@ -50,9 +49,9 @@ const Home: NextPage = () => {
   const { data: totalSupplyData } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
   const { data: isAllowListActiveData } = useContractRead({ ...contractConfig, functionName: 'isAllowListActive', watch: true });
   const { data: isPublicMintActiveData } = useContractRead({ ...contractConfig, functionName: 'isPublicMintActive', watch: true });
-  const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply', watch: false });
-  const { data: maxPerAddressData } = useContractRead({ ...contractConfig, functionName: 'maxPerAddress', watch: false });
-  const { data: maxPerAllowlistData } = useContractRead({ ...contractConfig, functionName: 'maxPerAllowList', watch: false });
+  const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply' });
+  const { data: maxPerAddressData } = useContractRead({ ...contractConfig, functionName: 'maxPerAddress' });
+  const { data: maxPerAllowlistData } = useContractRead({ ...contractConfig, functionName: 'maxPerAllowList' });
   useEffect(() => { if (balanceOfData) setBalanceOf(balanceOfData.toNumber()); }, [balanceOfData]);
   useEffect(() => { if (totalSupplyData) setTotalMinted(totalSupplyData.toNumber()); }, [totalSupplyData]);
   useEffect(() => { if (isPublicMintActiveData) setIsPublicMintActive(!!isPublicMintActiveData); }, [isPublicMintActiveData]);
