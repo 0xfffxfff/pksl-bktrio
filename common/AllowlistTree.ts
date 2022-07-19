@@ -1,5 +1,4 @@
 import { MerkleTree } from 'merkletreejs';
-import { ethers } from 'ethers';
 import keccak256 from 'keccak256';
 
 export default class AllowlistTree {
@@ -9,6 +8,13 @@ export default class AllowlistTree {
 
   constructor (_list: any[]) {
     this.list = _list;
+
+    /**
+     * This order of transformation of the list must be the same as the one on indelliblelabs.io
+     * since we need to generate the same merkle tree on our client.
+     * Thoughts: I am not sure that sort() on an object array has a consistent implementation
+     * but it works accross the major browsers for now, so I was ok to run with it.
+     */
     this.leafNodes = this.list
       .map((e) => e.address.toLowerCase().trim())
       .filter((e) => !!(null === e || void 0 === e ? void 0 : e.length))

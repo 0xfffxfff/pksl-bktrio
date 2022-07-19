@@ -20,15 +20,15 @@ const contractConfig = {
 };
 
 const Home: NextPage = () => {
+  const addRecentTransaction = useAddRecentTransaction();
+  const { isConnected, address } = useAccount();
+  const { chain: activeChain } = useNetwork();
   const [balanceOf, setBalanceOf] = useState(0);
   const [totalMinted, setTotalMinted] = useState(0);
   const [maxSupply, setMaxSupply] = useState(4096);
   const [maxPerAddress, setMaxPerAddress] = useState(0);
   const [maxPerAllowlist, setMaxPerAllowlist] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const { isConnected, address } = useAccount();
-  const { chain: activeChain } = useNetwork();
-  const addRecentTransaction = useAddRecentTransaction();
   const [isOnAllowList, setIsOnAllowList] = useState(false);
   const [isAllowListActive, setIsAllowListActive] = useState(false);
   const [isPublicMintActive, setIsPublicMintActive] = useState(false);
@@ -42,13 +42,13 @@ const Home: NextPage = () => {
   }, [isConnected, address])
 
   const { data: balanceOfData, refetch: refetchBalanceOf } = useContractRead({ ...contractConfig, functionName: 'balanceOf', args: address, enabled: isConnected, watch: true });
-  // const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'publicMintPrice', watch: false });
   const { data: totalSupplyData, refetch: refetchTotalSupply } = useContractRead({ ...contractConfig, functionName: 'totalSupply', watch: true });
   const { data: isAllowListActiveData } = useContractRead({ ...contractConfig, functionName: 'isAllowListActive', watch: true });
   const { data: isPublicMintActiveData } = useContractRead({ ...contractConfig, functionName: 'isPublicMintActive', watch: true });
   const { data: maxSupplyData } = useContractRead({ ...contractConfig, functionName: 'maxSupply' });
   const { data: maxPerAddressData } = useContractRead({ ...contractConfig, functionName: 'maxPerAddress' });
   const { data: maxPerAllowlistData } = useContractRead({ ...contractConfig, functionName: 'maxPerAllowList' });
+  // const { data: mintPriceData } = useContractRead({ ...contractConfig, functionName: 'publicMintPrice', watch: false });
   useEffect(() => { if (balanceOfData) setBalanceOf(balanceOfData.toNumber()); }, [balanceOfData]);
   useEffect(() => { if (totalSupplyData) setTotalMinted(totalSupplyData.toNumber()); }, [totalSupplyData]);
   useEffect(() => { if (isPublicMintActiveData) setIsPublicMintActive(!!isPublicMintActiveData); }, [isPublicMintActiveData]);
@@ -102,8 +102,6 @@ const Home: NextPage = () => {
 
   return (
     <div className="p-5">
-
-
       <div className="flex flex-col sm:flex-row gap-10 sm:gap-5 lg:gap-10 items-stretch justify-items-stretch">
 
         {/* LEFT SIDE */}
@@ -217,11 +215,11 @@ const Home: NextPage = () => {
                         </div>
                         <button
                           className="py-5 px-16 bg-black text-white text-3xl"
-                          disabled={isMintLoading/* || isMintStarted*/}
+                          disabled={isMintLoading}
                           onClick={(e) => handleMint(quantity)}
                         >
                           {isMintLoading && 'Waiting for approval'}
-                          {!isMintLoading /*&& !isMintStarted */ && ('Mint ' + quantity + ' pksl')}
+                          {!isMintLoading && ('Mint ' + quantity + ' pksl')}
 
                         </button>
                       </div>
