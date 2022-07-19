@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@alch/alchemy-sdk": "^1.0.8",
-    "@rainbow-me/rainbowkit": "workspace:*",
+    "@rainbow-me/rainbowkit": "0.4.2^",
     "@types/lodash.merge": "^4.6.7",
     "autoprefixer": "^10.4.7",
     "axios": "^0.27.2",
