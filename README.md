@@ -1,14 +1,16 @@
-# Mikrobes
+# pksl bktrios
 
-You will need to configure an `.env` or `.env.local` file from `.env.example` and provide the contract address and the alchemy api key.
+This repo is the minting interface for [pksl.bktr.io](https://pksl.bktr.io). Hosted with Netlify.
 
----
+## Info
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This app is based on the [Rainbowkit](https://github.com/rainbow-me/rainbowkit/tree/main/examples) examples. It is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+You will need to configure an `.env` or `.env.local` file from `.env.example` and provide the contract address and the Alchemy API key.
+
+Then, run the development server:
 
 ```bash
 npm run dev
