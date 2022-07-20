@@ -2,6 +2,8 @@
 
 This repo is the minting interface for [pksl.bktr.io](https://pksl.bktr.io). Hosted with Netlify.
 
+![pksl](/og-image.jpg)
+
 ## Info
 
 This app is based on the [Rainbowkit](https://github.com/rainbow-me/rainbowkit/tree/main/examples) examples. It is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
