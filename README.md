@@ -2,7 +2,7 @@
 
 This repo is the minting interface for [pksl.bktr.io](https://pksl.bktr.io). Hosted with Netlify.
 
-![pksl](/og-image.jpg)
+![pksl](/public/og-image.jpg)
 
 ## Info
 
